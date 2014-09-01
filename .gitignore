@@ -21,3 +21,17 @@
 *.i*86
 *.x86_64
 *.hex
+c-intro/bad-float
+c-intro/bad-float.c~
+c-intro/bad-int
+c-intro/bad-int.c~
+c-intro/calculation
+c-intro/hello
+c-intro/hello.c~
+c-intro/hello2
+c-intro/rechnung.c~
+c-intro/strlen-example
+c-intro/strlen-example.c~
+scripts/add-ignored
+scripts/calculate-fmetric
+scripts/create-make
