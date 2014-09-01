@@ -32,6 +32,3 @@ c-intro/hello2
 c-intro/rechnung.c~
 c-intro/strlen-example
 c-intro/strlen-example.c~
-scripts/add-ignored
-scripts/calculate-fmetric
-scripts/create-make
