@@ -20,12 +20,16 @@ int main(int argc, char *argv[]) {
 }
 
 int fac(int *result_ptr, int n) {
-  *result_ptr = 1;
   if (n < 0) {
+    *result_ptr = 0;
     return -1;
   }
+  *result_ptr = 1;
   int i;
   for (i = 2; i <= n; i++) {
+    if (*result_ptr == 0) {
+      break;
+    }
     *result_ptr *= i;
   }
   return 0;
