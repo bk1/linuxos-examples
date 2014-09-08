@@ -32,3 +32,15 @@ c-intro/hello2
 c-intro/rechnung.c~
 c-intro/strlen-example
 c-intro/strlen-example.c~
+c-intro/iterative-factorial
+c-intro/iterative-factorial-o2
+c-intro/iterative-factorial.c~
+c-intro/recursive-factorial
+c-intro/recursive-factorial-o2
+c-intro/recursive-factorial.c~
+c-intro/static-example
+c-intro/static-example.c~
+c-intro/tail-recursive-factorial
+c-intro/tail-recursive-factorial-o2
+c-intro/tail-recursive-factorial.c~
+c-intro/variables-example.c~
