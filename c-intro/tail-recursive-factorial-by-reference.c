@@ -7,7 +7,7 @@ int fac_intern(int n, int *result_ptr);
 int main(int argc, char *argv[]) {
   int i;
   int n;
-  for (n = 0; n < 20; n++) {
+  for (n = -1; n < 20; n++) {
     int f;
     int r = fac(n, &f);
     printf("r=%02d n=%10d f=%10d\n", r, n, f);
@@ -16,6 +16,9 @@ int main(int argc, char *argv[]) {
     int f;
     int r = fac(n, &f);
     printf("i=%4d r=%02d n=%10d f=%10d\n", i, r, n, f);
+    if (n < 0) {
+      break;
+    }
   }
   return 0;
 }
