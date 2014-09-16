@@ -33,17 +33,14 @@ int clean_suite1(void) {
 /* Simple test of creating and using an empty array-list
  */
 void test_empty_list() {
-  for (int cap = -5; cap <= 5; cap++) {
-    struct array_list list = create_list(0, cap, 1);
-    int s = get_list_size(list);
+  for (int cap = 1; cap <= 5; cap++) {
+    struct array_list list;
+    int rc = create_list(&list, 0, cap, 1);
+    CU_ASSERT_EQUAL(rc, 0);
+    int s = get_list_size(&list);
     CU_ASSERT_EQUAL(s, 0);
-    int c = get_list_capacity(list);
-    if (cap >= 1) {
-      CU_ASSERT_EQUAL(c, cap);
-    } else {
-      CU_ASSERT_EQUAL(c, 1);
-    }
-    
+    int c = get_list_capacity(&list);
+    CU_ASSERT_EQUAL(c, cap);
   }
 }
 
