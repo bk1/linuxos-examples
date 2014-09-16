@@ -44,6 +44,117 @@ void test_empty_list() {
   }
 }
 
+void test_one_element_list() {
+  for (int cap = 1; cap <= 5; cap++) {
+    struct array_list list;
+    int rc = create_list(&list, 1, cap, 1);
+    CU_ASSERT_EQUAL(rc, 0);
+    int s = get_list_size(&list);
+    CU_ASSERT_EQUAL(s, 1);
+    int c = get_list_capacity(&list);
+    CU_ASSERT_EQUAL(c, cap);
+  }
+}
+
+void test_create_wrong_param() {
+  int rc;
+  struct array_list list;
+  // size < 0
+  rc = create_list(&list, -1, 1, 1);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+  // capacity < size
+  rc = create_list(&list, 2, 1, 1);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+  // capacity = 0
+  rc = create_list(&list, 0, 0, 1);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+  // member_size = 0
+  rc = create_list(&list, 1, 1, 0);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+  // capacity too big
+  rc = create_list(&list, 1, 100000, 1000000);
+  CU_ASSERT_EQUAL(rc, ALLOCATE_FAILED);
+  // capacity too big
+  rc = create_list(&list, 1, 1000000, 1000000);
+  CU_ASSERT_EQUAL(rc, ALLOCATE_FAILED);
+  // capacity too big
+  rc = create_list(&list, 1, 100000000L, 1000000000L);
+  CU_ASSERT_EQUAL(rc, ALLOCATE_FAILED);
+  // capacity too big
+  rc = create_list(&list, 1, 10000000000L, 100000000000L);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+}
+
+void test_change_list_capacity() {
+  int rc;
+  int c;
+  struct array_list list;
+  // new capacity < size
+  rc = create_list(&list, 2, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_capacity(&list, 1);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+  // new capacity <= 0
+  rc = create_list(&list, 0, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_capacity(&list, 0);
+  CU_ASSERT_EQUAL(rc, ILLEGAL_PARAMETER_VALUE);
+  // new capacity bigger than old
+  rc = create_list(&list, 0, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_capacity(&list, 3);
+  CU_ASSERT_EQUAL(rc, 0);
+  c = get_list_capacity(&list);
+  CU_ASSERT_EQUAL(c, 3);
+  // new capacity smaller than old
+  rc = create_list(&list, 0, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_capacity(&list, 1);
+  CU_ASSERT_EQUAL(rc, 0);
+  c = get_list_capacity(&list);
+  CU_ASSERT_EQUAL(c, 1);
+}
+
+void test_change_list_size() {
+  int rc;
+  int s;
+  int c;
+  struct array_list list;
+  // new size < 0 will be transformed into 0xfffffffffffff a big positive number not allocatable.
+  rc = create_list(&list, 0, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_size(&list, -1);
+  CU_ASSERT_EQUAL(rc, ALLOCATE_FAILED);
+  // new size bigger than old size and than old capacity
+  rc = create_list(&list, 0, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_size(&list, 3);
+  CU_ASSERT_EQUAL(rc, 0);
+  s = get_list_size(&list);
+  CU_ASSERT_EQUAL(s, 3);
+  c = get_list_capacity(&list);
+  CU_ASSERT_EQUAL(c, 3);
+  // new size bigger than old size and not bigger than old capacity
+  rc = create_list(&list, 0, 4, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_size(&list, 3);
+  CU_ASSERT_EQUAL(rc, 0);
+  s = get_list_size(&list);
+  CU_ASSERT_EQUAL(s, 3);
+  c = get_list_capacity(&list);
+  CU_ASSERT_EQUAL(c, 4);
+  // new size smaller than old
+  rc = create_list(&list, 2, 2, 2);
+  CU_ASSERT_EQUAL(0, rc);
+  rc = change_list_size(&list, 1);
+  CU_ASSERT_EQUAL(rc, 0);
+  s = get_list_size(&list);
+  CU_ASSERT_EQUAL(s, 1);
+  c = get_list_capacity(&list);
+  CU_ASSERT_EQUAL(c, 2);
+}
+
+
 /* The main() function for setting up and running the tests.
  * Returns a CUE_SUCCESS on successful running, another
  * CUnit error code on failure.
@@ -64,7 +175,12 @@ int main() {
   }
 
   /* add the tests to the suite */
-  if ((NULL == CU_add_test(pSuite, "test of sorts on empty sets", test_empty_list))
+  if ((NULL == CU_add_test(pSuite, "test of zero element list", test_empty_list))
+      || (NULL == CU_add_test(pSuite, "test of one element list", test_one_element_list))
+      || (NULL == CU_add_test(pSuite, "test of wrong parameters for creting list", test_create_wrong_param))
+      || (NULL == CU_add_test(pSuite, "test change of list capacity", test_change_list_capacity))
+      || (NULL == CU_add_test(pSuite, "test change of list size", test_change_list_size))
+
       /* || (NULL == CU_add_test(pSuite, "test of sorts on one-element sets", test_sort_one)) */
       /* || (NULL == CU_add_test(pSuite, "test of sorts on ascending two-element sets", test_sort_two_asc)) */
       /* || (NULL == CU_add_test(pSuite, "test of sorts on descending two-element sets", test_sort_two_desc)) */

@@ -28,7 +28,11 @@ int create_list(struct array_list *list, size_t size, size_t capacity, size_t me
   list->size = size;
   list->capacity = capacity;
   list->member_size = member_size;
-  list->data = malloc(capacity * member_size);
+  size_t mem_size = capacity * member_size;
+  if (mem_size <= 0 || mem_size / capacity != member_size || mem_size % capacity != 0 || mem_size / member_size != capacity || mem_size % member_size != 0) {
+    return ILLEGAL_PARAMETER_VALUE;
+  }
+  list->data = malloc(mem_size);
   if (list->data == NULL) {
     return ALLOCATE_FAILED;
   }
@@ -51,6 +55,9 @@ int change_list_capacity(struct array_list *list, size_t new_capacity) {
 }
 
 int change_list_size(struct array_list *list, size_t new_size) {
+  if (new_size < 0) {
+    return ILLEGAL_PARAMETER_VALUE;
+  }
   if (new_size > list->capacity) {
     int rc = change_list_capacity(list, new_size);
     if (rc < 0) {
@@ -156,7 +163,11 @@ int copy(struct array_list *dest, struct array_list *source) {
   dest->size = source->size;
   dest->capacity = source->capacity;
   dest->member_size = source->member_size;
-  dest->data = malloc(source->capacity * source->member_size);
+  size_t mem_size = source->capacity * source->member_size;
+  if (mem_size <= 0) {
+    return ILLEGAL_PARAMETER_VALUE;
+  }
+  dest->data = malloc(mem_size);
   if (dest->data == NULL) {
     return ALLOCATE_FAILED;
   }
