@@ -83,3 +83,5 @@ c-intro/test/array-list-test
 c-intro/test/array-list-test.c~
 c-intro/test/index.html
 c-intro/variables-example
+c-intro/iterative-factorial.s
+c-intro/print-squares.s
