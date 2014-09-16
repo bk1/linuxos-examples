@@ -10,6 +10,10 @@ void zero_data(struct array_list *list, size_t begin, size_t beyond_end) {
 }
 
 int create_list(struct array_list *list, size_t size, size_t capacity, size_t member_size) {
+  list->data = NULL;
+  list->size = 0;
+  list->capacity = 0;
+  list->member_size = 0;
   if (size < 0) {
     return ILLEGAL_PARAMETER_VALUE;
   }
