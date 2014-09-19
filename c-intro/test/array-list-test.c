@@ -529,6 +529,49 @@ void test_insert_in_long_list_shift() {
   }
 }
 
+void test_insert_in_long_list_middle() {
+  size_t size = 2;
+  size_t msize = sizeof(long);
+  size_t cap = size + 1;
+  struct array_list list;
+  int rc = create_list(&list, size, cap, msize);
+  CU_ASSERT_EQUAL(rc, 0);
+  int s = get_list_size(&list);
+  CU_ASSERT_EQUAL(s, size);
+  for (int i = 0; i < size; i++) {
+    long ii = i+1;
+    long l = ii*ii*ii;
+    rc = set_in_list(&list, i, &l);
+    CU_ASSERT_EQUAL(rc, 0);
+    int s = get_list_size(&list);
+    CU_ASSERT_EQUAL(s, size);
+  }
+  long ll = -1;
+  insert_in_list(&list, 1, &ll);
+  s = get_list_size(&list);
+  CU_ASSERT_EQUAL(s, size+1);
+
+  void *element;
+  long *lelement;
+  long ii = 1;
+  ll = ii*ii*ii;
+  element = get_element_reference_from_list(&list, 0);
+  lelement = (long *) element;
+  CU_ASSERT_EQUAL(*lelement, ll);
+
+  ll = -1;
+  element = get_element_reference_from_list(&list, 1);
+  lelement = (long *) element;
+  CU_ASSERT_EQUAL(*lelement, ll);
+
+  ii = 2;
+  ll = ii*ii*ii;
+  element = get_element_reference_from_list(&list, 2);
+  lelement = (long *) element;
+  CU_ASSERT_EQUAL(*lelement, ll);
+  delete_list(&list);
+}
+
 /* The main() function for setting up and running the tests.
  * Returns a CUE_SUCCESS on successful running, another
  * CUnit error code on failure.
@@ -561,6 +604,9 @@ int main() {
       || (NULL == CU_add_test(pSuite, "set element in list", test_set_in_long_list_extend))
       || (NULL == CU_add_test(pSuite, "insert element in list", test_insert_in_list_extend))
       || (NULL == CU_add_test(pSuite, "insert element in list", test_insert_in_long_list_extend))
+      || (NULL == CU_add_test(pSuite, "insert element in list", test_insert_in_long_list_shift))
+      || (NULL == CU_add_test(pSuite, "insert element in list", test_insert_in_long_list_middle))
+
 
       /* || (NULL == CU_add_test(pSuite, "test of sorts on one-element sets", test_sort_one)) */
       /* || (NULL == CU_add_test(pSuite, "test of sorts on ascending two-element sets", test_sort_two_asc)) */
