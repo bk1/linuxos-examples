@@ -214,3 +214,26 @@ int delete_list(struct array_list *list) {
   return 0;
 }
 
+int print_list(struct array_list *list, FILE *output, fprint_element_fun fun) {
+  fprintf(output, "[ ");
+  size_t size = list->size;
+  size_t msize = list->member_size;
+  for (int i = 0; i < size; i++) {
+    void *element_ptr = get_element_reference_from_list(list, i);
+    if (i > 0) {
+      fprintf(output, ", ");
+    }
+    fun(output, element_ptr, msize);
+  }
+  fprintf(output, " ]");
+  return 0;
+}
+
+// TODO: 
+// functional patterns:
+// different kinds of iterations
+// find_first find first element where predicate is true
+// find_all find all elements where predicate is true (is a list also)
+// exists (predicate true for at least one element / stop checking if first succeeds)
+// all (predicate true for all elements / stop checking if first fails)
+// 

@@ -14,6 +14,35 @@
 
 #include "array-list.h"
 
+void fprint_long_element(FILE *output, void *long_element, size_t member_size) {
+  if (member_size != sizeof(long)) {
+    fprintf(output, "{$$ size mismatch: expected %zd found %zd}", (size_t) sizeof(long), (size_t) member_size);
+    return;
+  }
+  long *long_ptr = (long *) long_element;
+  fprintf(output, "%ld", *long_ptr);
+}
+
+void fprint_string_element(FILE *output, void *str_element, size_t member_size) {
+  char *char_ptr = (char *) str_element;
+  fprintf(output, "\"");
+  for (int i = 0; i < member_size; i++) {
+    char c = *(char_ptr++);
+    if (c < 32) {
+      fprintf(output, "^%c", 0x40 | c);
+    } else if (c == 0x7f) {
+      fprintf(output, "^?");
+    } else if (c == '\"') {
+      fprintf(output, "\\\"");
+    } else if (c == '\\') {
+      fprintf(output, "\\\\");
+    } else {
+      fprintf(output, "%c", c);
+    }
+  }
+  fprintf(output, "\"");
+}
+
 void check_zero(void *ptr, size_t size) {
   size_t i;
   for (i = 0; i < size; i++) {
@@ -40,32 +69,57 @@ int clean_suite1(void) {
 /* Simple test of creating and using an empty array-list
  */
 void test_empty_list() {
-  for (int cap = 1; cap <= 5; cap++) {
+  for (size_t cap = 1; cap <= 5; cap++) {
     struct array_list list;
     int rc = create_list(&list, 0, cap, 1);
     CU_ASSERT_EQUAL(rc, 0);
-    int s = get_list_size(&list);
+    size_t s = get_list_size(&list);
     CU_ASSERT_EQUAL(s, 0);
-    int c = get_list_capacity(&list);
+    size_t c = get_list_capacity(&list);
     CU_ASSERT_EQUAL(c, cap);
+    printf("empty_list=");
+    print_list(&list, stdout, fprint_long_element);
+    printf("\n");
     delete_list(&list);
   }
 }
 
 void test_one_element_list() {
-  for (int cap = 1; cap <= 5; cap++) {
-    for (int msize = 1; msize <= 5; msize++){
+  for (size_t cap = 1; cap <= 5; cap++) {
+    for (size_t msize = 1; msize <= 5; msize++){
       struct array_list list;
       int rc = create_list(&list, 1, cap, msize);
       CU_ASSERT_EQUAL(rc, 0);
-      int s = get_list_size(&list);
+      size_t s = get_list_size(&list);
       CU_ASSERT_EQUAL(s, 1);
-      int c = get_list_capacity(&list);
+      size_t c = get_list_capacity(&list);
       CU_ASSERT_EQUAL(c, cap);
       void *element = get_element_reference_from_list(&list, 0);
       check_zero(element, msize);
       delete_list(&list);
     }
+  }
+}
+
+void test_one_element_long_list() {
+  for (size_t cap = 1; cap <= 5; cap++) {
+    size_t msize = sizeof(long);
+    struct array_list list;
+    int rc = create_list(&list, 1, cap, msize);
+    CU_ASSERT_EQUAL(rc, 0);
+    size_t s = get_list_size(&list);
+    CU_ASSERT_EQUAL(s, 1);
+    size_t c = get_list_capacity(&list);
+    CU_ASSERT_EQUAL(c, cap);
+    void *element = get_element_reference_from_list(&list, 0);
+    check_zero(element, msize);
+    for (long l = -5; l <= 5; l++) {
+      set_in_list(&list, 0, &l);
+      printf("l=%2ld: one_element_long_list=", l);
+      print_list(&list, stdout, fprint_long_element);
+      printf("\n");
+    }
+    delete_list(&list);
   }
 }
 
@@ -112,8 +166,8 @@ void test_change_list_capacity() {
   struct array_list list;
 
   // new capacity < size
-  int size = 2;
-  int msize = 2;
+  size_t size = 2;
+  size_t msize = 2;
   rc = create_list(&list, size, 2, msize);
   CU_ASSERT_EQUAL(0, rc);
   for (int i = 0; i < size; i++) {
@@ -155,7 +209,7 @@ void test_change_list_size() {
   int s;
   int c;
   struct array_list list;
-  int msize = 2;
+  size_t msize = 2;
 
   // new size < 0 will be transformed into 0xfffffffffffff a big positive number not allocatable.
   rc = create_list(&list, 0, 2, msize);
@@ -212,10 +266,12 @@ void test_change_list_size() {
   delete_list(&list);
 }
 
-void test_set_int_list_replace() {
-  int cap = 1;
-  for (int size = 1;size < 5; size++) {
-    for (int msize = 1; msize <= 5; msize++){
+void test_set_in_list_replace() {
+  size_t cap;
+  static char *bytes = "abcdefghijklmnopqrstuvwxyz";
+  for (size_t size = 1;size < 5; size++) {
+    cap = size;
+    for (size_t msize = 1; msize <= 5; msize++) {
       struct array_list list;
       int rc = create_list(&list, size, cap, msize);
       CU_ASSERT_EQUAL(rc, 0);
@@ -223,9 +279,253 @@ void test_set_int_list_replace() {
         void *element = get_element_reference_from_list(&list, i);
         check_zero(element, msize);
       }
-      // TODO
+      for (int i = 0; i < size; i++) {
+        rc = set_in_list(&list, i, (void *)(bytes + i));
+        CU_ASSERT_EQUAL(rc, 0);
+      }
+      printf("s=%zd m=%zd l=", size, msize);
+      print_list(&list, stdout, fprint_string_element);
+      printf("\n");
+      for (int i = 0; i < size; i++) {
+        void *element = get_element_reference_from_list(&list, i);
+        char *celement = (char *) element;
+        for (int j = 0; j < msize; j++) {
+          CU_ASSERT_EQUAL(celement[j], bytes[i+j]);
+        }
+        char ccelement[5];
+        rc = copy_element_from_list(&ccelement, &list, i);
+        CU_ASSERT_EQUAL(rc, 0);
+        for (int j = 0; j < msize; j++) {
+          CU_ASSERT_EQUAL(celement[j], bytes[i+j]);
+        }
+      }
       delete_list(&list);
     }
+  }
+}
+
+void test_set_in_long_list_replace() {
+  size_t cap = 1;
+  for (size_t size = 1;size < 5; size++) {
+    size_t msize = sizeof(long);
+    struct array_list list;
+    cap = size;
+    int rc = create_list(&list, cap, size, msize);
+    CU_ASSERT_EQUAL(rc, 0);
+    for (int i = 0; i < size; i++) {
+      void *element = get_element_reference_from_list(&list, i);
+      check_zero(element, msize);
+    }
+    for (int i = 0; i < size; i++) {
+      long l = i*i*i;
+      rc = set_in_list(&list, i, &l);
+      CU_ASSERT_EQUAL(rc, 0);
+    }
+    printf("s=%zd m=%zd l=", size, msize);
+    print_list(&list, stdout, fprint_long_element);
+    printf("\n");
+    for (int i = 0; i < size; i++) {
+      void *element = get_element_reference_from_list(&list, i);
+      long *lelement = (long *) element;
+      CU_ASSERT_EQUAL(*lelement, i*i*i);
+      long ll;
+      rc = copy_element_from_list(&ll, &list, i);
+      CU_ASSERT_EQUAL(rc, 0);
+      CU_ASSERT_EQUAL(ll, i*i*i);
+    }      
+    delete_list(&list);
+  }
+}
+
+void test_set_in_list_extend() {
+  static char *bytes = "abcdefghijklmnopqrstuvwxyz";
+  for (size_t size = 1;size < 5; size++) {
+    for (size_t msize = 1; msize <= 5; msize++) {
+      struct array_list list;
+      int rc = create_list(&list, 0, 1, msize);
+      CU_ASSERT_EQUAL(rc, 0);
+      int s = get_list_size(&list);
+      CU_ASSERT_EQUAL(s, 0);
+      for (int i = size - 1; i >= 0; i--) {
+        rc = set_in_list(&list, i, (void *)(bytes + i));
+        CU_ASSERT_EQUAL(rc, 0);
+        int s = get_list_size(&list);
+        CU_ASSERT_EQUAL(s, size);
+        for (int j = 0; j < i; j++) {
+          void *element = get_element_reference_from_list(&list, j);
+          check_zero(element, msize);
+        }
+      }
+      printf("s=%zd m=%zd l=", size, msize);
+      print_list(&list, stdout, fprint_string_element);
+      printf("\n");
+      for (int i = 0; i < size; i++) {
+        void *element = get_element_reference_from_list(&list, i);
+        char *celement = (char *) element;
+        for (int j = 0; j < msize; j++) {
+          CU_ASSERT_EQUAL(celement[j], bytes[i+j]);
+        }
+        char ccelement[5];
+        rc = copy_element_from_list(&ccelement, &list, i);
+        CU_ASSERT_EQUAL(rc, 0);
+        for (int j = 0; j < msize; j++) {
+          CU_ASSERT_EQUAL(celement[j], bytes[i+j]);
+        }
+      }
+      delete_list(&list);
+    }
+  }
+}
+
+void test_set_in_long_list_extend() {
+  for (size_t size = 1;size < 5; size++) {
+    size_t msize = sizeof(long);
+    struct array_list list;
+    int rc = create_list(&list, 0, 1, msize);
+    CU_ASSERT_EQUAL(rc, 0);
+    int s = get_list_size(&list);
+    CU_ASSERT_EQUAL(s, 0);
+    for (int i = size-1; i >= 0; i--) {
+      long l = i*i*i;
+      rc = set_in_list(&list, i, &l);
+      CU_ASSERT_EQUAL(rc, 0);
+      for (int j = 0; j < i; j++) {
+      void *element = get_element_reference_from_list(&list, j);
+      check_zero(element, msize);
+    }
+    }
+    printf("s=%zd m=%zd l=", size, msize);
+    print_list(&list, stdout, fprint_long_element);
+    printf("\n");
+    for (int i = 0; i < size; i++) {
+      void *element = get_element_reference_from_list(&list, i);
+      long *lelement = (long *) element;
+      CU_ASSERT_EQUAL(*lelement, i*i*i);
+      long ll;
+      rc = copy_element_from_list(&ll, &list, i);
+      CU_ASSERT_EQUAL(rc, 0);
+      CU_ASSERT_EQUAL(ll, i*i*i);
+    }      
+    delete_list(&list);
+  }
+}
+
+void test_insert_in_list_extend() {
+  static char *bytes = "abcdefghijklmnopqrstuvwxyz";
+  for (size_t size = 1;size < 5; size++) {
+    for (size_t msize = 1; msize <= 5; msize++) {
+      struct array_list list;
+      int rc = create_list(&list, 0, 1, msize);
+      CU_ASSERT_EQUAL(rc, 0);
+      int s = get_list_size(&list);
+      CU_ASSERT_EQUAL(s, 0);
+      for (int i = 0; i < size; i++) {
+        rc = insert_in_list(&list, i, (void *)(bytes + i));
+        CU_ASSERT_EQUAL(rc, 0);
+        int s = get_list_size(&list);
+        CU_ASSERT_EQUAL(s, i+1);
+        for (int j = 0; j <= i; j++) {
+          void *element = get_element_reference_from_list(&list, j);
+          char *celement = (char *) element;
+          for (int k = 0; k < msize; k++) {
+            CU_ASSERT_EQUAL(celement[k], bytes[j+k]);
+          }
+        }
+      }
+      printf("s=%zd m=%zd l=", size, msize);
+      print_list(&list, stdout, fprint_string_element);
+      printf("\n");
+      for (int i = 0; i < size; i++) {
+        void *element = get_element_reference_from_list(&list, i);
+        char *celement = (char *) element;
+        for (int j = 0; j < msize; j++) {
+          CU_ASSERT_EQUAL(celement[j], bytes[i+j]);
+        }
+        char ccelement[5];
+        rc = copy_element_from_list(&ccelement, &list, i);
+        CU_ASSERT_EQUAL(rc, 0);
+        for (int j = 0; j < msize; j++) {
+          CU_ASSERT_EQUAL(celement[j], bytes[i+j]);
+        }
+      }
+      delete_list(&list);
+    }
+  }
+}
+
+void test_insert_in_long_list_extend() {
+  for (size_t size = 1;size < 5; size++) {
+    size_t msize = sizeof(long);
+    struct array_list list;
+    int rc = create_list(&list, 0, 1, msize);
+    CU_ASSERT_EQUAL(rc, 0);
+    int s = get_list_size(&list);
+    CU_ASSERT_EQUAL(s, 0);
+    for (int i = 0; i < size; i++) {
+      long l = i*i*i;
+      rc = insert_in_list(&list, i, &l);
+      CU_ASSERT_EQUAL(rc, 0);
+      int s = get_list_size(&list);
+      CU_ASSERT_EQUAL(s, i+1);
+      for (int j = 0; j <= i; j++) {
+        void *element = get_element_reference_from_list(&list, j);
+        long *lelement = (long *) element;
+        CU_ASSERT_EQUAL(*lelement, j*j*j);
+      }
+    }
+    printf("s=%zd m=%zd l=", size, msize);
+    print_list(&list, stdout, fprint_long_element);
+    printf("\n");
+    for (int i = 0; i < size; i++) {
+      void *element = get_element_reference_from_list(&list, i);
+      long *lelement = (long *) element;
+      CU_ASSERT_EQUAL(*lelement, i*i*i);
+      long ll;
+      rc = copy_element_from_list(&ll, &list, i);
+      CU_ASSERT_EQUAL(rc, 0);
+      CU_ASSERT_EQUAL(ll, i*i*i);
+    }      
+    delete_list(&list);
+  }
+}
+
+void test_insert_in_long_list_shift() {
+  for (size_t size = 1;size < 5; size++) {
+    size_t msize = sizeof(long);
+    struct array_list list;
+    int rc = create_list(&list, 0, 1, msize);
+    CU_ASSERT_EQUAL(rc, 0);
+    int s = get_list_size(&list);
+    CU_ASSERT_EQUAL(s, 0);
+    for (int i = 0; i < size; i++) {
+      long l = i*i*i;
+      rc = insert_in_list(&list, 0, &l);
+      CU_ASSERT_EQUAL(rc, 0);
+      int s = get_list_size(&list);
+      CU_ASSERT_EQUAL(s, i+1);
+      for (int j = 0; j <= i; j++) {
+        void *element = get_element_reference_from_list(&list, j);
+        long *lelement = (long *) element;
+        int ii = i - j;
+        long ll = ii*ii*ii;
+        CU_ASSERT_EQUAL(*lelement, ll);
+      }
+    }
+    printf("s=%zd m=%zd l=", size, msize);
+    print_list(&list, stdout, fprint_long_element);
+    printf("\n");
+    for (int i = 0; i < size; i++) {
+      void *element = get_element_reference_from_list(&list, i);
+      long *lelement = (long *) element;
+      int ii = size - 1 - i;
+      long lx = ii*ii*ii;
+      CU_ASSERT_EQUAL(*lelement, lx);
+      long ll;
+      rc = copy_element_from_list(&ll, &list, i);
+      CU_ASSERT_EQUAL(rc, 0);
+      CU_ASSERT_EQUAL(ll, lx);
+    }      
+    delete_list(&list);
   }
 }
 
@@ -251,9 +551,16 @@ int main() {
   /* add the tests to the suite */
   if ((NULL == CU_add_test(pSuite, "test of zero element list", test_empty_list))
       || (NULL == CU_add_test(pSuite, "test of one element list", test_one_element_list))
+      || (NULL == CU_add_test(pSuite, "test of one element long list", test_one_element_long_list))
       || (NULL == CU_add_test(pSuite, "test of wrong parameters for creting list", test_create_wrong_param))
       || (NULL == CU_add_test(pSuite, "test change of list capacity", test_change_list_capacity))
       || (NULL == CU_add_test(pSuite, "test change of list size", test_change_list_size))
+      || (NULL == CU_add_test(pSuite, "set element in list", test_set_in_list_replace))
+      || (NULL == CU_add_test(pSuite, "set element in list", test_set_in_long_list_replace))
+      || (NULL == CU_add_test(pSuite, "set element in list", test_set_in_list_extend))
+      || (NULL == CU_add_test(pSuite, "set element in list", test_set_in_long_list_extend))
+      || (NULL == CU_add_test(pSuite, "insert element in list", test_insert_in_list_extend))
+      || (NULL == CU_add_test(pSuite, "insert element in list", test_insert_in_long_list_extend))
 
       /* || (NULL == CU_add_test(pSuite, "test of sorts on one-element sets", test_sort_one)) */
       /* || (NULL == CU_add_test(pSuite, "test of sorts on ascending two-element sets", test_sort_two_asc)) */

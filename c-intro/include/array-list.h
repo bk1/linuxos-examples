@@ -2,6 +2,7 @@
 #define ARRAY_LIST_H
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #define ILLEGAL_PARAMETER_VALUE (-1)
 #define ALLOCATE_FAILED (-2)
@@ -10,6 +11,8 @@
 #define INDEX_OUT_OF_RANGE (-5)
 #define LIST_ALREADY_EMPTY (-6)
 #define UNKNOWN_ERROR (-7)
+
+typedef void (*fprint_element_fun)(FILE *output, void *element, size_t member_size);
 
 /* struct to hold the whole array list.
  * size is the number of elements actually in the list
@@ -191,5 +194,7 @@ int copy_part(struct array_list *dest, struct array_list *src, size_t start, siz
  * return UNKNOWN_ERROR if free failed
  */
 int delete_list(struct array_list *list);
+
+int print_list(struct array_list *list, FILE *output, fprint_element_fun fun);
 
 #endif
