@@ -24,16 +24,20 @@ int main( int argc, char *argv[] ){
   char str1[8];
   char str2[8];
   
-  str1[0] = 'S';
-  str1[1] = 'E';
-  str1[2] = 'C';
-  str1[3] = 'R';
-  str1[4] = 'E';
-  str1[5] = 'T';
-  str1[6] = 0;
-  gets(str2);
-  if( strncmp(str1, str2, 8) == 0 )
+  str2[0] = 'S';
+  str2[1] = 'E';
+  str2[2] = 'C';
+  str2[3] = 'R';
+  str2[4] = 'E';
+  str2[5] = 'T';
+  str2[6] = (char) 0;
+
+  printf("READING:\n\n");
+  gets(str1);
+  printf("READ:\n\n");
+  if (strncmp(str1, str2, 8) == 0) {
     valid = TRUE;
-  printf("buffer1: str1(%s), str2(%s), valid(%d)", str1, str2, valid);
+  }
+  printf("buffer1: str1=%s str2=%s valid=%d\n", str1, str2, valid);
   exit(0);
 }
