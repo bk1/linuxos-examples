@@ -5,16 +5,19 @@ CFLAGS=-Wall -g -O2 -std=gnu99 -I. -I./include -L./lib
 LIBS=-lcitsky -lm
 
 
-all: processes/simpson processes/pipe processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test
+all: processes/simpson processes/pipe processes/fork+named-pipe processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test
 
 clean:
-	rm -f  processes/simpson processes/pipe processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test lib/array-list.o
+	rm -f  processes/simpson processes/pipe processes/fork+named-pipe processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test lib/array-list.o
 
 processes/simpson: processes/simpson.c lib/libcitsky.a
 	gcc $(CFLAGS) processes/simpson.c $(LIBS) -o processes/simpson
 
 processes/pipe: processes/pipe.c lib/libcitsky.a
 	gcc $(CFLAGS) processes/pipe.c $(LIBS) -o processes/pipe
+
+processes/fork+named-pipe: processes/fork+named-pipe.c lib/libcitsky.a
+	gcc $(CFLAGS) processes/fork+named-pipe.c $(LIBS) -o processes/fork+named-pipe
 
 processes/stack: processes/stack.c lib/libcitsky.a
 	gcc $(CFLAGS) processes/stack.c $(LIBS) -o processes/stack
