@@ -38,9 +38,6 @@ void child_operations(char *pipe) {
 }
 
 void parent_operations(char *pipe) {
-  printf("waiting for child to get ready\n");
-  fflush(stdout);
-  sleep(1);
   printf("starting parent operations\n");
   fflush(stdout);
   FILE *output = fopen(pipe, "w");
