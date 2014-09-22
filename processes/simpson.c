@@ -5,7 +5,7 @@
 #include <math.h>
 #include <sys/types.h>
 #include <unistd.h>
-
+#include <sys/time.h>
 
 void usage(char *argv0, char *text) {
   printf("%s\n", text);
@@ -19,6 +19,9 @@ int main(int argc, char *argv[]) {
     usage(argv[0], "wrong number of parameters");
   }
 
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  long t0 = 1000000L * tv.tv_sec + tv.tv_usec;
   const double A = atof(argv[1]);
   const double B = atof(argv[2]);
   const int N = atoi(argv[3]);
@@ -46,7 +49,10 @@ int main(int argc, char *argv[]) {
     contribution /= 6;
     result += contribution;
   }
-  printf("pid=%8d ID=%-8s A=%8.6lf B=%8.6lf N=%8d -> result=%8.6f\n", getpid(), argv[4], A, B, N, result);
+  gettimeofday(&tv, NULL);
+  long t1 = 1000000L * tv.tv_sec + tv.tv_usec;
+  long delta_t = t1 - t0;
+  printf("pid=%8d ID=%-8s t=%8ld A=%8.6lf B=%8.6lf N=%8d -> result=%8.6f\n", getpid(), argv[4], delta_t, A, B, N, result);
   exit(0);
 }
 
