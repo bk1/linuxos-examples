@@ -99,3 +99,8 @@ processes/stack.c~
 test/array-list-test
 test/array-list-test.c~
 test/index.html
+#tmp.c#
+processes/fork+named-pipe
+processes/fork+named-pipe.c~
+processes/pipe
+processes/pipe.c~
