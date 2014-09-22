@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
   if (N <= 0) {
     usage(argv[0], "N must be > 0");
   }
+  printf("started: pid=%8d ID=%-8s A=%8.6lf B=%8.6lf N=%8d\n\n", getpid(), argv[4], A, B, N);
 
   const double delta = (B - A) / N;
   const double delta2 = delta / 2;
@@ -52,7 +53,7 @@ int main(int argc, char *argv[]) {
   gettimeofday(&tv, NULL);
   long t1 = 1000000L * tv.tv_sec + tv.tv_usec;
   long delta_t = t1 - t0;
-  printf("pid=%8d ID=%-8s t=%8ld A=%8.6lf B=%8.6lf N=%8d -> result=%8.6f\n", getpid(), argv[4], delta_t, A, B, N, result);
+  printf("pid=%8d ID=%-8s t=%8ld A=%8.6lf B=%8.6lf N=%8d -> result=%8.6f\n\n", getpid(), argv[4], delta_t, A, B, N, result);
   exit(0);
 }
 

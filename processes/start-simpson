@@ -1,0 +1,17 @@
+#!/bin/sh
+nice -n 0 time simpson 0 6.28 100000000 N0&
+nice -n 1 time simpson 0 6.28 100000000 N1&
+nice -n 2 time simpson 0 6.28 100000000 N2&
+nice -n 3 time simpson 0 6.28 100000000 N3&
+nice -n 4 time simpson 0 6.28 100000000 N4&
+nice -n 5 time simpson 0 6.28 100000000 N5&
+nice -n 6 time simpson 0 6.28 100000000 N6&
+nice -n 7 time simpson 0 6.28 100000000 N7&
+nice -n 8 time simpson 0 6.28 100000000 N8&
+nice -n 9 time simpson 0 6.28 100000000 N9&
+nice -n 10 time simpson 0 6.28 100000000 N10&
+nice -n 15 time simpson 0 6.28 150000000 N15&
+nice -n 20 time simpson 0 6.28 200000000 N20&
+sleep 30
+echo done all
+
