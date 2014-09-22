@@ -29,7 +29,7 @@ int create_list(struct array_list *list, size_t size, size_t capacity, size_t me
   if (list == NULL) {
     return ILLEGAL_PARAMETER_VALUE;
   }
-  list->size = size;
+  list->size = size; // (*list).size
   list->capacity = capacity;
   list->member_size = member_size;
   size_t mem_size = capacity * member_size;
