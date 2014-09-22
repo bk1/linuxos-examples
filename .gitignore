@@ -85,3 +85,17 @@ c-intro/test/index.html
 c-intro/variables-example
 c-intro/iterative-factorial.s
 c-intro/print-squares.s
+include/index.html
+lib/array-list.c~
+lib/index.html
+processes/demoexec
+processes/demoexec.c~
+processes/forktest
+processes/forktest.c~
+processes/simpson
+processes/simpson.c~
+processes/stack
+processes/stack.c~
+test/array-list-test
+test/array-list-test.c~
+test/index.html
