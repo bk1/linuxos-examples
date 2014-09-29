@@ -22,6 +22,7 @@
 *.x86_64
 *.hex
 .#*
+#*#
 
 c-intro/bad-float
 c-intro/bad-float.c~
