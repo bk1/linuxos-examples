@@ -111,3 +111,5 @@ processes/cstart-simpson.c~
 processes/start-simpson~
 processes/thread-example
 processes/thread-example.c~
+processes/thread-factorial
+processes/thread-factorial.c~
