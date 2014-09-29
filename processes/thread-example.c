@@ -27,7 +27,7 @@ void *thread_run(void *ptr) {
   pid_t ppid =  getppid();
   pthread_t tid = pthread_self();
   printf("In child: tid=%ld pid=%d ppid=%d\n", (long) tid, pid, ppid);
-  printf("In child\n");
+  printf("In child: writing message=%s of len=%d\n", message, message_len);
   retcode = write(pipes[1], message, strlen(message));
   if (retcode < 0) {
     printf("Error writing to pipe retcode=%d errno=%d\n", retcode, errno);
@@ -74,6 +74,7 @@ int main(int argc, char *argv[]) {
   }
   pthread_t tid = pthread_self();
   printf("In parent: retcode=%d tid=%ld pid=%d ppid=%d\n", retcode, (long) tid, pid, ppid);
+  sleep(1);
   retcode = read(pipes[0], buff, message_len);
   if (retcode < 0) {
     printf("Error reading from pipe retcode=%d errno=%d\n", retcode, errno);
