@@ -104,3 +104,9 @@ processes/fork+named-pipe
 processes/fork+named-pipe.c~
 processes/pipe
 processes/pipe.c~
+#tmp.c#
+processes/cstart-simpson
+processes/cstart-simpson.c~
+processes/start-simpson~
+processes/thread-example
+processes/thread-example.c~
