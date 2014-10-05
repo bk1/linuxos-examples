@@ -16,19 +16,25 @@
 #include <pthread.h>
 
 int pipes[2];
-int message_len;
+static const size_t SIZE_T_SIZE = sizeof(size_t);
 
 void *thread_run(void *ptr) {
-  char message[] = "This is the message to be transmitted";
+  const char *message = "This is the message to be transmitted";
+  size_t message_len = strlen(message);
   int retcode;
   sleep(1);
-  message_len = strlen(message);
   pid_t pid =  getpid();
   pid_t ppid =  getppid();
   pthread_t tid = pthread_self();
   printf("In child: tid=%ld pid=%d ppid=%d\n", (long) tid, pid, ppid);
-  printf("In child: writing message=%s of len=%d\n", message, message_len);
-  retcode = write(pipes[1], message, strlen(message));
+  printf("In child: writing message=%s of len=%zd\n", message, message_len);
+  retcode = write(pipes[1], &message_len, SIZE_T_SIZE);
+  if (retcode < 0) {
+    printf("Error writing to pipe retcode=%d errno=%d\n", retcode, errno);
+    exit(1);
+  }
+  printf("%d bytes written\n", retcode);
+  retcode = write(pipes[1], message, message_len);
   if (retcode < 0) {
     printf("Error writing to pipe retcode=%d errno=%d\n", retcode, errno);
     exit(1);
@@ -53,7 +59,6 @@ int main(int argc, char *argv[]) {
     usage(argv[0], "");
   }
 
-  char buff[1024];
   int retcode;
   pid_t pid;
   pid_t ppid;
@@ -75,15 +80,25 @@ int main(int argc, char *argv[]) {
   pthread_t tid = pthread_self();
   printf("In parent: retcode=%d tid=%ld pid=%d ppid=%d\n", retcode, (long) tid, pid, ppid);
   sleep(1);
-  retcode = read(pipes[0], buff, message_len);
+  size_t message_len;
+  retcode = read(pipes[0], &message_len, SIZE_T_SIZE);
+  if (retcode < 0) {
+    printf("Error reading from pipe retcode=%d errno=%d\n", retcode, errno);
+    exit(1);
+  }
+  printf("%d bytes read\n", retcode);
+  char *buffer = (char *) malloc(message_len+1);
+  retcode = read(pipes[0], buffer, message_len);
   if (retcode < 0) {
     printf("Error reading from pipe retcode=%d errno=%d\n", retcode, errno);
     exit(1);
   }
   printf("%d chars read\n", retcode);
   close(pipes[0]);
-  printf("found message=\"%s\"\n", buff);
+  buffer[message_len] = '\000';
+  printf("found message=\"%s\" (len=%zd)\n", buffer, message_len);
   pthread_join(thread1, NULL);
   printf("done\n");
+
   exit(0);
 }

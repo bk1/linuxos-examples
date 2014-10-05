@@ -5,10 +5,10 @@ CFLAGS=-Wall -g -O2 -std=gnu99 -I. -I./include -L./lib
 LIBS=-lcitsky -lm -lpthread
 
 
-all: processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test
+all: processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-test
 
 clean:
-	rm -f  processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test lib/array-list.o
+	rm -f  processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-test lib/array-list.o lib/cyclic-int-buffer.o
 
 processes/thread-example: processes/thread-example.c lib/libcitsky.a
 	gcc $(CFLAGS) processes/thread-example.c $(LIBS) -o processes/thread-example
@@ -100,10 +100,16 @@ c-intro/bad-int: c-intro/bad-int.c lib/libcitsky.a
 test/array-list-test: test/array-list-test.c lib/libcitsky.a
 	gcc $(CFLAGS) test/array-list-test.c $(LIBS) -L/usr/local/lib -lcunit -o test/array-list-test
 
+test/cyclic-int-buffer-test: test/cyclic-int-buffer-test.c lib/libcitsky.a
+	gcc $(CFLAGS) test/cyclic-int-buffer-test.c $(LIBS) -L/usr/local/lib -lcunit -o test/cyclic-int-buffer-test
+
 lib/array-list.o: lib/array-list.c
 	gcc -c $(CFLAGS) lib/array-list.c -o lib/array-list.o
 
+lib/cyclic-int-buffer.o: lib/cyclic-int-buffer.c
+	gcc -c $(CFLAGS) lib/cyclic-int-buffer.c -o lib/cyclic-int-buffer.o
 
 
-lib/libcitsky.a: lib/array-list.o
-	ar crs lib/libcitsky.a lib/array-list.o
+
+lib/libcitsky.a: lib/array-list.o lib/cyclic-int-buffer.o
+	ar crs lib/libcitsky.a lib/array-list.o lib/cyclic-int-buffer.o
