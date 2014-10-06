@@ -115,3 +115,10 @@ processes/thread-factorial
 processes/thread-factorial.c~
 processes/thread-mutex
 processes/thread-mutex.c~
+c-intro/polymorphical-simpson
+c-intro/polymorphical-simpson.c~
+include/cyclic-buffer.h~
+include/cyclic-int-buffer.h~
+lib/cyclic-int-buffer.c~
+test/cyclic-int-buffer-test
+test/cyclic-int-buffer-test.c~
