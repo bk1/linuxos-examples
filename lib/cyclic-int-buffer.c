@@ -5,6 +5,7 @@
 #include <pthread.h>
 
 int create_cyclic_int_buffer(struct cyclic_int_buffer *cyclic_buffer, size_t capacity) {
+  // TODO check capacity >= 1
   cyclic_buffer->internal_capacity = capacity + 1;
   cyclic_buffer->read_idx = 0;
   cyclic_buffer->write_idx = 0;
@@ -84,6 +85,7 @@ int put(struct cyclic_int_buffer *cyclic_buffer, int value) {
   write_idx++;
   write_idx %= cyclic_buffer->internal_capacity;
   cyclic_buffer->write_idx = write_idx;
+  // TODO can size become inconsisten??? and lead to wrong decisions?
   size_t size = get_cyclic_buffer_size(cyclic_buffer);
   cyclic_buffer->is_full = (size == cyclic_buffer->internal_capacity-1);
   if (! cyclic_buffer->is_full) {

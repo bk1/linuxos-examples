@@ -69,9 +69,13 @@ size_t get_cyclic_buffer_capacity(struct cyclic_int_buffer *cyclic_buffer);
  */
 int get_element_from_cyclic_buffer(struct cyclic_int_buffer *cyclic_buffer, size_t index, int *result);
 
+// TODO doku
 int put(struct cyclic_int_buffer *cyclic_buffer, int value);
 
+// TODO doku
 int get(struct cyclic_int_buffer *cyclic_buffer);
+
+// TODO nonblocking
 
 /*
  * free memory allocated
