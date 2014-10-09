@@ -5,10 +5,10 @@ CFLAGS=-Wall -g -O2 -std=gnu99 -I. -I./include -L./lib
 LIBS=-lcitsky -lm -lpthread
 
 
-all: polymorphie/polymorphical-simpson processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-test
+all: polymorphie/polymorphical-simpson processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-run test/cyclic-int-buffer-test
 
 clean:
-	rm -f  polymorphie/polymorphical-simpson processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-test lib/array-list.o lib/cyclic-int-buffer.o
+	rm -f  polymorphie/polymorphical-simpson processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-run test/cyclic-int-buffer-test lib/array-list.o lib/cyclic-int-buffer.o
 
 polymorphie/polymorphical-simpson: polymorphie/polymorphical-simpson.c lib/libcitsky.a
 	gcc $(CFLAGS) polymorphie/polymorphical-simpson.c $(LIBS) -o polymorphie/polymorphical-simpson
@@ -102,6 +102,9 @@ c-intro/bad-int: c-intro/bad-int.c lib/libcitsky.a
 
 test/array-list-test: test/array-list-test.c lib/libcitsky.a
 	gcc $(CFLAGS) test/array-list-test.c $(LIBS) -L/usr/local/lib -lcunit -o test/array-list-test
+
+test/cyclic-int-buffer-run: test/cyclic-int-buffer-run.c lib/libcitsky.a
+	gcc $(CFLAGS) test/cyclic-int-buffer-run.c $(LIBS) -L/usr/local/lib -lcunit -o test/cyclic-int-buffer-run
 
 test/cyclic-int-buffer-test: test/cyclic-int-buffer-test.c lib/libcitsky.a
 	gcc $(CFLAGS) test/cyclic-int-buffer-test.c $(LIBS) -L/usr/local/lib -lcunit -o test/cyclic-int-buffer-test
