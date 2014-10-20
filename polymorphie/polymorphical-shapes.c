@@ -29,6 +29,10 @@ struct shape_data {
   double c;
 };
 
+double c_to_d(char c) {
+  return (double) (c-'0');
+}
+
 double random_double() {
   return (abs(random()) + 1) / 1000000.0;
 }
@@ -59,13 +63,18 @@ void circle_printer(struct shape_data *data) {
   printf("C(r=%f)", data->a);
 }
 
-void circle_random_init(struct shape_data *data) {
+void circle_init(struct shape_data *data, double r) {
   data->area=circle_area;
   data->circumference=circle_circumference;
   data->printer=circle_printer;
-  data->a = random_double();
+  data->a = r;
   data->b = 0;
   data->c = 0;
+}
+
+void circle_random_init(struct shape_data *data) {
+  double r = random_double();
+  circle_init(data, r);
 }
 
 
@@ -83,13 +92,18 @@ void square_printer(struct shape_data *data) {
   printf("S(a=%f)", data->a);
 }
 
-void square_random_init(struct shape_data *data) {
+void square_init(struct shape_data *data, double a) {
   data->area=square_area;
   data->circumference=square_circumference;
   data->printer=square_printer;
-  data->a = random_double();
+  data->a = a;
   data->b = 0;
   data->c = 0;
+}
+
+void square_random_init(struct shape_data *data) {
+  double a = random_double();
+  square_init(data, a);
 }
 
 
@@ -116,16 +130,23 @@ void triangle_printer(struct shape_data *data) {
   printf("T(a=%f b=%f c=%f)", a, b, c);
 }
 
-void triangle_random_init(struct shape_data *data) {
+void triangle_init(struct shape_data *data, double a, double b, double c) {
   data->area=triangle_area;
   data->circumference=triangle_circumference;
   data->printer=triangle_printer;
+  data->a = a;
+  data->b = b;
+  data->c = c;
+}
+
+void triangle_random_init(struct shape_data *data) {
   double u = random_double();
   double v = random_double();
   double w = random_double();
-  data->a = u+v;
-  data->b = v+w;
-  data->c = u+w;
+  double a = u+v;
+  double b = v+w;
+  double c = u+w;
+  triangle_init(data, a, b, c);
 }
 
 int main(int argc, char *argv[]) {
@@ -139,19 +160,38 @@ int main(int argc, char *argv[]) {
   struct shape_data *array = (struct shape_data *) malloc(cnt * sizeof(struct shape_data));
   for (int i = 0; i < cnt; i++) {
     char *arg = argx[i];
-    if (strlen(arg) != 1) {
-      usage(argv[0], "strlen of each argument must be 1");
+    size_t l = strlen(arg);
+    if (l < 1 || l > 4) {
+      usage(argv[0], "strlen of each argument must be 1..4");
     }
     char c = arg[0];
     switch (c) {
     case 'C':
-      circle_random_init(&(array[i]));
+      if (l == 1) {
+        circle_random_init(&(array[i]));
+      } else if (l == 2) {
+        circle_init(&(array[i]), c_to_d(arg[1]));
+      } else {
+        usage(argv[0], "strlen for C must be 1 or 2");
+      }
       break;
     case 'S':
-      square_random_init(&(array[i]));
+      if (l == 1) {
+        square_random_init(&(array[i]));
+      } else if (l == 2) {
+        square_init(&(array[i]), c_to_d(arg[1]));
+      } else {
+        usage(argv[0], "strlen for S must be 1 or 2");
+      }
       break;
     case 'T':
-      triangle_random_init(&(array[i]));
+      if (l == 1) {
+        triangle_random_init(&(array[i]));
+      } else if (l == 4) {
+        triangle_init(&(array[i]), c_to_d(arg[1]), c_to_d(arg[2]), c_to_d(arg[3]));
+      } else {
+        usage(argv[0], "strlen for T must be 1 or 4");
+      }
       break;
     default: usage(argv[0], "only C S and T allowed");
       break;
