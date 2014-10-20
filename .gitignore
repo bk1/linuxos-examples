@@ -129,3 +129,5 @@ polymorphie/polymorphical-shapes
 polymorphie/polymorphical-shapes.c~
 memory/malloc-gross-net-sizes
 memory/malloc-gross-net-sizes.c~
+memory/malloc-and-free
+memory/malloc-and-free.c~
