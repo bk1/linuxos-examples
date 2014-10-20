@@ -5,10 +5,10 @@ CFLAGS=-Wall -g -O2 -std=gnu99 -I. -I./include -L./lib
 LIBS=-lcitsky -lm -lpthread
 
 
-all: polymorphie/polymorphical-simpson polymorphie/polymorphical-shapes processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-run test/cyclic-int-buffer-test memory/malloc-gross-net-sizes
+all: polymorphie/polymorphical-simpson polymorphie/polymorphical-shapes processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-run test/cyclic-int-buffer-test memory/malloc-gross-net-sizes memory/malloc-and-free
 
 clean:
-	rm -f  polymorphie/polymorphical-simpson polymorphie/polymorphical-shapes processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-run test/cyclic-int-buffer-test memory/malloc-gross-net-sizes lib/array-list.o lib/cyclic-int-buffer.o
+	rm -f  polymorphie/polymorphical-simpson polymorphie/polymorphical-shapes processes/thread-example processes/thread-mutex processes/cstart-simpson processes/simpson processes/pipe processes/fork+named-pipe processes/thread-factorial processes/stack processes/forktest processes/demoexec c-intro/iterative-caching-fibonacci c-intro/hello2 c-intro/hello c-intro/bad-float c-intro/variables-example c-intro/strlen-example c-intro/recursive-caching-fibonacci c-intro/static-example c-intro/tail-recursive-factorial c-intro/iterative-factorial c-intro/tail-recursive-factorial-by-reference c-intro/tail-recursive-fibonacci c-intro/calculation c-intro/recursive-factorial c-intro/print-squares c-intro/iterative-factorial-by-reference c-intro/iterative-fibonacci c-intro/recursive-fibonacci c-intro/bad-int test/array-list-test test/cyclic-int-buffer-run test/cyclic-int-buffer-test memory/malloc-gross-net-sizes memory/malloc-and-free lib/array-list.o lib/cyclic-int-buffer.o
 
 polymorphie/polymorphical-simpson: polymorphie/polymorphical-simpson.c lib/libcitsky.a
 	gcc $(CFLAGS) polymorphie/polymorphical-simpson.c $(LIBS) -o polymorphie/polymorphical-simpson
@@ -114,6 +114,9 @@ test/cyclic-int-buffer-test: test/cyclic-int-buffer-test.c lib/libcitsky.a
 
 memory/malloc-gross-net-sizes: memory/malloc-gross-net-sizes.c lib/libcitsky.a
 	gcc $(CFLAGS) memory/malloc-gross-net-sizes.c $(LIBS) -o memory/malloc-gross-net-sizes
+
+memory/malloc-and-free: memory/malloc-and-free.c lib/libcitsky.a
+	gcc $(CFLAGS) memory/malloc-and-free.c $(LIBS) -o memory/malloc-and-free
 
 lib/array-list.o: lib/array-list.c
 	gcc -c $(CFLAGS) lib/array-list.c -o lib/array-list.o

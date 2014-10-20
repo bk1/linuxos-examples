@@ -30,9 +30,10 @@ int main(int argc, char *argv[]) {
     prev = ptrs_i;
     int *ptr8 = (int *) (ptrs_i - 8);
     int *ptr4 = (int *) (ptrs_i - 4);
-    printf("i=%8d r=%8d d=%8d p8=%8d p4=%8d\n", i, rel, diff, *ptr8, *ptr4);
-    free(ptrs_i);
-    printf("i=%8d freed: p8=%8d p4=%8d\n", i, *ptr8, *ptr4);
+    long *lptr8 = (long *) (ptrs_i - 8);
+    printf("i=%8d r=%8d d=%8d p8l=%8ld p8=%8d p4=%8d\n", i, rel, diff, *lptr8, *ptr8, *ptr4);
+    // free(ptrs_i);
+    // printf("i=%8d freed: p8=%8d p4=%8d\n", i, *ptr8, *ptr4);
     
   }
   exit(0);
