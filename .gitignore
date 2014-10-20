@@ -127,3 +127,5 @@ test/cyclic-int-buffer-run
 test/cyclic-int-buffer-run.c~
 polymorphie/polymorphical-shapes
 polymorphie/polymorphical-shapes.c~
+memory/malloc-gross-net-sizes
+memory/malloc-gross-net-sizes.c~
