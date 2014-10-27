@@ -85,6 +85,11 @@ sub doexec ($@) {
             $all .= " $tname";
             $clean .= " $tname";
         }
+    } elsif ($name =~ m/\/kernel-modules\//) {
+        $tname =~ s/\.c$//;
+        $targets .= "$tname: $sname lib/libcitsky.a\n\tgcc -nostdinc -I/usr/src/linux/include -I/usr/src/linux-3.11.10-21/include/uapi -I/usr/lib64/gcc/x86_64-suse-linux/4.8/include -I/usr/src/linux-3.11.10-21/arch/x86/include/uapi -I/usr/src/linux-3.11.10-21/include -I/usr/src/linux-3.11.10-21/arch/x86/include  \$(CFLAGS) $sname \$(LIBS) -o $tname\n\n";
+        $all .= " $tname";
+        $clean .= " $tname";
     } else {
         $tname =~ s/\.c$//;
         $targets .= "$tname: $sname lib/libcitsky.a\n\tgcc \$(CFLAGS) $sname \$(LIBS) -o $tname\n\n";

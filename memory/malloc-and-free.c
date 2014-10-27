@@ -35,11 +35,11 @@ int main(int argc, char *argv[]) {
     free(pprev);
     pprev = prev;
     prev = ptr;
-    int rel = (int) (ptr - base);
-    int diff = (int) (ptr - pbase);
+    size_t rel = (size_t) (ptr - base);
+    long diff = (long) (ptr - pbase);
     pbase = ptr;
     size_t *isize = (size_t *) (ptr - 8);
-    sprintf(buffer, "i=%d s=%zd rel=%d diff=%d isize=%zd\n", i, size, rel, diff, *isize);
+    sprintf(buffer, "i=%d s=%zd rel=%zd diff=%ld isize=%zd\n", i, size, rel, diff, *isize);
     write(1, buffer, strlen(buffer));
     size = (size_t) (summand + factor * size);
   }
