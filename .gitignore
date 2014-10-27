@@ -155,3 +155,8 @@ c-intro/d/variables-example.e
 memory/malloc-first-fit-check
 memory/malloc-first-fit-check.c~
 out.log
+io+fs/lowlevel-record-storage
+io+fs/lowlevel-record-storage.c~
+io+fs/record-storage.h~
+io+fs/struct.h~
+records.dat
