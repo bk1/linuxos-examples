@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cat `find . -name '.??*' -prune -o -name '*.[ch]' -print` | perl -p -e 's/(.)/$1\n/g;' | sort | uniq -c | sort -n
+
